@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
+
+	"crawler/db"
+	"crawler/model"
 
 	"golang.org/x/net/html"
 )
@@ -73,7 +77,14 @@ func extractLinks(node *html.Node, links *[]string) {
 
 			url := link.String()
 
+			visitedLink := model.VisitedLink{
+				Website:     link.Host,
+				Link:        link.String(),
+				VisitedDate: time.Now(),
+			}
+
 			*links = append(*links, url)
+			db.Insert("links", visitedLink)
 
 			visitUrl(url)
 		}
