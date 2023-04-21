@@ -12,8 +12,6 @@ import (
 	"golang.org/x/net/html"
 )
 
-var visited = map[string]bool{}
-
 func main() {
 	visitUrl("https://aprendagolang.com.br")
 }
@@ -46,11 +44,12 @@ func visitUrl(url string) {
 }
 
 func checkIfVisited(url string) bool {
-	if ok := visited[url]; ok {
+	fmt.Printf("Visitando link: %s\n", url)
+	if db.IsLinkVisited(url) {
 		return true
 	}
 
-	visited[url] = true
+	fmt.Printf("Link já visitado: %s\n", url)
 	return false
 }
 
