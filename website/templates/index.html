@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <title>Web Crawler</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        td > a {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="text-3xl font-bold text-center">
+        Web Crawler
+    </h1>
+
+    <table class="table-auto">
+        <thead>
+            <tr>
+                <th>Website</th>
+                <th>Link</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range .Links }}
+            <tr>
+                <td>{{ .Website }}</td>
+                <td><a href="{{ .Link }}" target="_blank">{{ .Link }}</a></td>
+                <td>{{ .VisitedDate }}</td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,19 +1,44 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"crawler/db"
 	"crawler/model"
+	"crawler/website"
 
 	"golang.org/x/net/html"
 )
 
+var (
+	link   string
+	action string
+)
+
+func init() {
+	flag.StringVar(&link, "url", "https://aprendagolang.com.br", "url para iniciar visitas")
+	flag.StringVar(&action, "action", "website", "qual serviço iniciar")
+}
+
 func main() {
-	visitUrl("https://aprendagolang.com.br")
+	flag.Parse()
+
+	switch action {
+
+	case "website":
+		website.Run()
+	case "webcrawler":
+		done := make(chan bool)
+		go visitUrl(link)
+		<-done
+	default:
+		fmt.Printf("action '%s' não reconhecida\n", action)
+	}
 }
 
 func visitUrl(url string) {
@@ -30,7 +55,8 @@ func visitUrl(url string) {
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		panic(fmt.Sprintln("status diferente de 200: %d", res.StatusCode))
+		fmt.Sprintln("status diferente de 200: %d", res.StatusCode)
+		return
 	}
 
 	htmlTree, err := html.Parse(res.Body)
@@ -70,7 +96,7 @@ func extractLinks(node *html.Node, links *[]string) {
 			}
 
 			link, err := url.Parse(attr.Val)
-			if err != nil || link.Scheme == "" {
+			if err != nil || !strings.HasPrefix(link.Scheme, "http") {
 				continue
 			}
 
